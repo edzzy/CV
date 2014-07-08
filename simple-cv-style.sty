@@ -1,0 +1,182 @@
+%Copyright (C) 2002-2006, Sebastien Tandel <standel@info.ucl.ac.be>
+%
+%This program is free software; you can redistribute it and/or modify
+%it under the terms of the GNU Lesser General Public License as published by
+%the Free Software Foundation; either version 2 of the License, or
+%(at your option) any later version.
+%
+%This program is distributed in the hope that it will be useful,
+%but WITHOUT ANY WARRANTY; without even the implied warranty of
+%MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%GNU Lesser General Public License for more details.
+%
+%You should have received a copy of the GNU Lesser General Public License
+%along with this program; if not, write to the Free Software
+%Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{simple-cv-style}[2002/11/29 --- v0.1 Simple CV Style]
+\typeout{`-- Simple CV Style ---}
+\typeout{ }
+
+\newcounter{Concise}
+\setcounter{Concise}{0}
+
+\newif\ifEnglish
+\global\Englishtrue
+\DeclareOption{english}{\global\Englishtrue}
+\DeclareOption{francais}{\global\Englishfalse}
+\newif\ifConcise
+\DeclareOption{concise}{\global\Concisetrue}
+\newif\ifDetail
+\DeclareOption{detail}{\global\Detailtrue}
+\ProcessOptions\relax
+
+
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{ifthen}
+\usepackage{times}
+\usepackage{url}
+
+\textwidth = 16cm
+\setlength{\topskip}{0pt}
+\setlength{\hoffset}{10pt}
+\setlength{\voffset}{0pt}
+\setlength{\topmargin}{-1.5cm}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\footskip}{4pt}
+\setlength{\textheight}{800pt}
+\setlength{\marginparsep}{0pt}
+\setlength{\marginparwidth}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+
+\newenvironment{List}
+	       {\begin{list}{$\checkmark$}
+	                    {%\addtolength{\leftmargin}{5mm}
+			     \setlength{\itemsep}{0mm}}}
+	       {\end{list}}
+
+\newenvironment{Section}[1]
+	       {\vspace{.35cm}
+    		\hspace*{-1.55cm}\large{\textbf{\textsc{#1}}}\tiny\vspace*{-.1cm}\\
+    		\hspace*{-.95cm}\rule{17cm}{.2pt}
+
+		\normalsize}
+	       {\vspace{.1cm}}
+
+\newcommand{\Bullet}{\textbullet\ \hspace{.2cm}}
+\newcommand{\Indent}{\hspace*{-1.62cm}}
+\newcommand{\SubPoint}{\Indent\Bullet}
+
+\newlength{\boxlength}
+\newcommand{\TitleFunction}[1]
+{
+  %\vspace{.1cm}
+  \hspace{-.3cm}
+	\begin{center}
+  \settowidth{\boxlength}{#1}
+  %How to use the value of boxlength ???
+\framebox(350, 40)[200,0]{\large{\textbf{\textsc{#1}}}}
+\end{center}
+%\vspace{.3cm}
+}
+
+\newcommand{\Summary}[1]
+{
+	\vspace{.2cm}
+  \hspace*{.4cm}
+  \begin{minipage}{17.cm}\large{\textbf{\underline{#1}}}\end{minipage}
+%  \vspace{.1cm}
+}
+
+\newcounter{IsFirstWork}
+\setcounter{IsFirstWork}{1}
+\newcommand{\Work}[4] %{Enterprise's name}{Date}{Job}{Description}
+{
+\ifConcise\else\ifnum\theIsFirstWork=0\vspace{.2cm}\fi\fi
+\SubPoint\begin{minipage}{11.1cm}#1\end{minipage}\begin{minipage}{5.1cm}\begin{flushright}#2\\\end{flushright}\end{minipage}
+
+\hspace{-1.13cm}\texttt{#3\ifConcise\else\\\fi}
+\ifConcise%
+\else\vspace{-.3cm}\\\begin{minipage}{15cm}\small\textit{#4}\normalsize\end{minipage}\\
+\fi
+\setcounter{IsFirstWork}{0}
+} 
+
+\newcommand{\YearStudy}[4] %{Title of Diplom}{University's name}{Grade}{Year}
+{
+\SubPoint
+    \begin{minipage}{8cm}\if #1 \ \else {{\bf #1}}\fi\end{minipage}
+\begin{minipage}{5cm}\if#3 \ \else{\begin{center}{\bf#3}\end{center}}\fi\end{minipage}
+\begin{minipage}{3cm}\begin{flushright}#4\end{flushright}\end{minipage}
+\if#2\ %
+\vspace{.1cm}
+\else {\\\hspace*{-0.54cm}\begin{minipage}{8cm}#2\end{minipage}}\fi
+}
+
+\newcounter{IsFirstThesis}
+\setcounter{IsFirstThesis}{1}
+\newcommand{\Thesis}[3] %{Title}{Place}{Description}
+{
+\ifDetail
+\ifnum\theIsFirstThesis=1\else\vspace*{.3cm}\fi\fi
+\SubPoint\begin{minipage}{2cm}#2\end{minipage}:\hspace{.5cm} #1%\\
+\ifDetail
+\if#3\ %
+\else\\\begin{minipage}{15cm}\vspace{.1cm}\textit{{\small#3}}\end{minipage}\fi
+\fi
+\setcounter{IsFirstThesis}{0}
+}
+
+\newcommand{\Publication}[4] %{Title}{author(s)}{Editions}{Date}
+{
+\SubPoint "\textit{#1}", {\small #2}\normalsize, {\small #3}\normalsize, {\small #4}\normalsize.
+}
+
+\newcommand{\Language}[1] %{comment for French}{comment for English}{comment for Dutch}
+{
+%  \SubPoint \begin{minipage}{2cm}\ifEnglish{French}\else{Français}\fi\end{minipage}: #1
+
+  \SubPoint \begin{minipage}{2cm}\ifEnglish{English}\else{Anglais}\fi\end{minipage} : #1 
+
+  
+}
+\newcommand{\SPidentity}{\hspace{-1.65cm}}
+\newcommand{\Identity}[6] %{Name}{Address}{Location}{Tel}{Mail}{Birth date}
+%the args are optional... unfortunately, for the moment, the photo's location
+%depends of how many args are present :-/
+{
+  \begin{tabular}{lr}\\
+
+  \begin{minipage}{12cm}\SPidentity #1\end{minipage}  & \\
+  
+  \ifthenelse{\equal{#2}{}}{}{\SPidentity #2 & \\}
+
+  \ifthenelse{\equal{#3}{}}{}{\SPidentity #3 & \\}
+
+  \ifthenelse{\equal{#4}{}}{}{\SPidentity #4 & \\}
+
+  \ifthenelse{\equal{#5}{}}{}{\SPidentity \url{#5} & \\}
+
+  \ifthenelse{\equal{#6}{}}{}{\SPidentity
+    \ifEnglish{Date of birth : }\else{Date de naissance : }\fi#6  & \\}
+
+
+  \end{tabular}
+}
+\newcommand{\Reference}[7] %{Name}{Université-other}{Labo}{Ruen}{CodePost Ville}{email}{tel}
+{
+	\SubPoint #1 \\
+	\hfill #2 \\
+	\hfill #3 \\
+	\hfill #4 \\
+	\hfill #5 \\
+	\hfill \url{#6} \\
+	\hfill #7 \\
+
+}
+\pagestyle{empty}
